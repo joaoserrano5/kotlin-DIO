@@ -1,0 +1,68 @@
+enum class Nivel { BASICO, INTERMEDIARIO, AVANCADO }
+
+class Usuario(
+    val nome: String,
+    val email: String,
+    val nivel: Nivel,
+)
+
+data class ConteudoEducacional(
+    var nome: String,
+    val nivel: Nivel,
+)
+
+data class Formacao(
+    val nome: String,
+    var conteudos: List<ConteudoEducacional>,
+) {
+    private val inscritos = mutableListOf<Usuario>()
+
+    fun matricular(usuario: Usuario) {
+        if (usuario in inscritos) {
+            println("${usuario.nome} já está matriculado")
+        } else {
+            inscritos.add(usuario)
+            println("Matrícula de ${usuario.nome} realizada com sucesso")
+        }
+    }
+}
+
+fun confDeMatricula(usuario: Usuario): String =
+    """
+    Confirmação de Matrícula:
+    Nome: ${usuario.nome}
+    Email: ${usuario.email}
+    Nível: ${usuario.nivel}
+    """.trimIndent()
+
+fun main() {
+    val conteudos =
+        listOf(
+            ConteudoEducacional("Introdução ao Kotlin", nivel = Nivel.BASICO),
+            ConteudoEducacional("Kotlin Intermediário", nivel = Nivel.INTERMEDIARIO),
+            ConteudoEducacional("Kotlin Avançado", nivel = Nivel.AVANCADO),
+        )
+
+    val formacao = Formacao("Curso de Kotlin", conteudos)
+
+    println("Digite o nome do usuário:")
+    val nome = readLine() ?: ""
+    println("Digite o email do usuário:")
+    val email = readLine() ?: ""
+    println("Escolha o nível (1: BASICO, 2: INTERMEDIARIO, 3: AVANCADO):")
+    val nivelInput = readLine()
+    val nivel =
+        when (nivelInput) {
+            "1" -> Nivel.BASICO
+            "2" -> Nivel.INTERMEDIARIO
+            "3" -> Nivel.AVANCADO
+            else -> {
+                println("Nível Inválido. Contate a coordenação")
+                Nivel.BASICO
+            }
+        }
+    val usuario = Usuario(nome, email, nivel)
+    formacao.matricular(usuario)
+    println(confDeMatricula(usuario))
+}
+
